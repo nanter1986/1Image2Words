@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/place_autocomplete_prediction_primary_text_highlight"
+    android:clickable="false"
     android:orientation="vertical"
     android:weightSum="10"
     tools:context="com.oneimagetwowords.nanter1986.a1image2words.MainActivity">
@@ -35,21 +36,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="3"
-                android:text="TextView" />
+                android:background="@color/cast_expanded_controller_text_color"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="TextView"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="18dp" />
 
             <TextView
                 android:id="@+id/adj2"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="3"
-                android:text="TextView" />
+                android:background="@color/cast_expanded_controller_text_color"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="TextView"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="18dp" />
 
             <TextView
                 android:id="@+id/adj3"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="3"
-                android:text="TextView" />
+                android:background="@color/cast_expanded_controller_text_color"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="TextView"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="18dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -64,21 +80,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="3"
-                android:text="TextView" />
+                android:background="@color/cast_expanded_controller_text_color"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="TextView"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="18dp" />
 
             <TextView
                 android:id="@+id/mainW2"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="3"
-                android:text="TextView" />
+                android:background="@color/cast_expanded_controller_text_color"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="TextView"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="18dp" />
 
             <TextView
                 android:id="@+id/mainW3"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="3"
-                android:text="TextView" />
+                android:background="@color/cast_expanded_controller_text_color"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="TextView"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="18dp" />
         </LinearLayout>
     </LinearLayout>
 

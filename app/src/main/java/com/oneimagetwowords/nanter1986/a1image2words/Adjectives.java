@@ -20,7 +20,14 @@ public enum Adjectives {
     YOUNG("young"),
     PUBLIC("public"),
     BAD("bad"),
-    GOOD("good");
+    GOOD("good"),
+    COLD("cold"),
+    HOT("hot"),
+    COOL("cool"),
+    HUGE("huge"),
+    ENORMOUS("enormous"),
+    PRETTY("pretty"),
+    UGLY("ugly");
 
     private String Adjective;
 

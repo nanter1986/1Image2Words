@@ -10,12 +10,48 @@
     android:weightSum="10"
     tools:context="com.oneimagetwowords.nanter1986.a1image2words.MainActivity">
 
-    <ImageView
-        android:id="@+id/imageToFind"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="4"
-        app:srcCompat="@color/cast_expanded_controller_background_color" />
+        android:orientation="horizontal"
+        android:weightSum="10">
+
+        <ImageView
+            android:id="@+id/imageToFind"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="8"
+            app:srcCompat="@color/cast_expanded_controller_background_color" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/currentScore"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="5"
+                android:background="@color/wallet_holo_blue_light"
+                android:gravity="center"
+                android:text="TextView"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/highScore"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="5"
+                android:background="@color/wallet_holo_blue_light"
+                android:gravity="center"
+                android:text="TextView"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

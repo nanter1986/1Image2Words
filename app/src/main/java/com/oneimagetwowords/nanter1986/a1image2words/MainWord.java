@@ -33,7 +33,26 @@ public enum MainWord {
     ADVENTURE("adventure"),
     AIRCRAFT("aircraft"),
     AIRPORT("airport"),
-    ALCOHOL("alcohol");
+    ALCOHOL("alcohol"),
+    COUCH("couch"),
+    HAIR("hair"),
+    CHURCH("church"),
+    SPACE("space"),
+    GALAXY("galaxy"),
+    STAR("star"),
+    SUN("sun"),
+    PANDA("panda"),
+    DINOSAUR("dinosaur"),
+    FROG("frog"),
+    FRUIT("fruit"),
+    UFO("ufo"),
+    TOWER("tower"),
+    ZOMBIE("zombie"),
+    VAMPIRE("vampire"),
+    BEACH("beach"),
+    WAVE("wave"),
+    TURTLE("turtle"),
+    DRAGON("dragon");
 
     private String mainword;
 

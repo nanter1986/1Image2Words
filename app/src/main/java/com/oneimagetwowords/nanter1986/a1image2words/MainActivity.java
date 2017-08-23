@@ -1,7 +1,9 @@
 package com.oneimagetwowords.nanter1986.a1image2words;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -9,10 +11,16 @@ import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.games.Games;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -27,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends Activity {
 
@@ -41,6 +50,17 @@ public class MainActivity extends Activity {
     boolean inWinOrLoseScreen=false;
     MediaPlayer correctPlayer;
     MediaPlayer wrongPlayer;
+    MediaPlayer highscoreSound;
+
+    Context context;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+
+    int currentScorePoints;
+    int highScorePoints;
+
+    TextView currentScoreDisplay;
+    TextView highscoreDisplay;
 
     ArrayList<CustomClickButtons>arraylistOfAdjectiveCustomButtons=new ArrayList<>();
 
@@ -61,7 +81,15 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        context = getApplicationContext();
+        sharedPreferences = getPreferences(MODE_PRIVATE);
+        editor = sharedPreferences.edit();
         generalSetup();
+        currentScorePoints=getScoreFromIntent(savedInstanceState);
+        currentScoreDisplay.setText("current\nscore:\n"+currentScorePoints+"");
+        highScorePoints=sharedPreferences.getInt("highScore",0);
+        highscoreDisplay.setText("HIGH\nSCORE:\n"+highScorePoints+"");
         runApp();
 
     }
@@ -70,6 +98,26 @@ public class MainActivity extends Activity {
         setUpViews();
         setupArraylists();
 
+
+    }
+
+    private int getScoreFromIntent(Bundle savedInstanceState) {
+        String newString;
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if(extras == null) {
+                newString= null;
+            } else {
+                newString= extras.getString("theScore");
+            }
+        } else {
+            newString= (String) savedInstanceState.getSerializable("theScore");
+        }
+        if(newString==null){
+            newString="0";
+        }
+        int score=Integer.parseInt(newString);
+        return score;
     }
 
     private void setupArraylists() {
@@ -152,13 +200,37 @@ public class MainActivity extends Activity {
     private void youWon() {
 
         Log.i("selectedboth","you won");
-        correctPlayer.start();
-        imageToFind.setImageResource(R.drawable.correct);
-        goToNext();
+        currentScorePoints++;
+        currentScoreDisplay.setText("current\nscore:\n"+currentScorePoints+"");
+        if(checkForHighScore()){
+            highscoreSound.start();
+            imageToFind.setImageResource(R.drawable.highscore);
+            goToNext(4000);
+        }else{
+            correctPlayer.start();
+            imageToFind.setImageResource(R.drawable.correct);
+            goToNext(2000);
+        }
+
+
     }
 
-    private void goToNext() {
+    private boolean checkForHighScore() {
+        boolean isHighScore=false;
+        if(currentScorePoints>highScorePoints){
+
+            editor.putInt("highScore",currentScorePoints);
+            editor.commit();
+            isHighScore=true;
+        }
+        return isHighScore;
+        //display success message
+        //continue playing
+    }
+
+    private void goToNext(int waitInMillis) {
         final Intent myIntent = new Intent(this, MainActivity.class);
+        myIntent.putExtra("theScore", currentScorePoints+"");
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -166,21 +238,25 @@ public class MainActivity extends Activity {
                 startActivity(myIntent);
                 finish();
             }
-        }, 2000);
+        }, waitInMillis);
 
     }
 
     private void youLost() {
         Log.i("selectedboth","you lost");
+        currentScorePoints=0;
         wrongPlayer.start();
         imageToFind.setImageResource(R.drawable.wrong);
-        goToNext();
+        goToNext(2000);
     }
 
     private void setUpViews(){
         correctPlayer = MediaPlayer.create(this, R.raw.correct);
         wrongPlayer = MediaPlayer.create(this, R.raw.wrong);
+        highscoreSound = MediaPlayer.create(this, R.raw.highscore);
         imageToFind=findViewById(R.id.imageToFind);
+        currentScoreDisplay=findViewById(R.id.currentScore);
+        highscoreDisplay=findViewById(R.id.highScore);
         arraylistOfAdjectiveCustomButtons.add(new CustomClickButtons((TextView)findViewById(R.id.adj1)));
         arraylistOfAdjectiveCustomButtons.add(new CustomClickButtons((TextView)findViewById(R.id.adj2)));
         arraylistOfAdjectiveCustomButtons.add(new CustomClickButtons((TextView)findViewById(R.id.adj3)));
@@ -304,6 +380,8 @@ public class MainActivity extends Activity {
         return clazz.getEnumConstants()[x];
     }
 
+
+
     public class GetTheImage extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -326,6 +404,13 @@ public class MainActivity extends Activity {
                 //containers[0].temp.setText("Failed to connect");
             }
             img = doc.select("img[data-src]");
+            int index;
+            if(img.size()>20){
+                index=new Random().nextInt(20);
+            }else{
+                index=0;
+            }
+            Log.i("randomImageIndex",index+"");
             selectedURL = img.get(0).attr("data-src");
         }
 

@@ -51,7 +51,9 @@ public enum MainWord {
     BEACH("beach"),
     WAVE("wave"),
     TURTLE("turtle"),
-    DRAGON("dragon");
+    DRAGON("dragon"),
+    SWORD("sword"),
+    COMPUTER("computer");
 
     private String mainword;
 

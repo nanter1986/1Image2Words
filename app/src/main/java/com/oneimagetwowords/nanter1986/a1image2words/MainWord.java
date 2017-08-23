@@ -17,7 +17,6 @@ public enum MainWord {
     MAN("man"),
     LIFE("life"),
     HAND("hand"),
-    CHILD("child"),
     EYE("eye"),
     GOVERNMENT("government"),
     COMPANY("company"),

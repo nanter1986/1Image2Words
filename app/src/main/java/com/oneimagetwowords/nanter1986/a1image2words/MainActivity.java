@@ -405,13 +405,14 @@ public class MainActivity extends Activity {
             }
             img = doc.select("img[data-src]");
             int index;
-            if(img.size()>20){
-                index=new Random().nextInt(20);
+            int size=img.size();
+            if(size>0){
+                index=new Random().nextInt(size);
             }else{
                 index=0;
             }
-            Log.i("randomImageIndex",index+"");
-            selectedURL = img.get(0).attr("data-src");
+            Log.i("randomImageIndex",index+" "+size);
+            selectedURL = img.get(index).attr("data-src");
         }
 
         protected void grabImageFromURL(){

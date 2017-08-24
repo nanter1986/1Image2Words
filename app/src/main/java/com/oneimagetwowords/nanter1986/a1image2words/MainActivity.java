@@ -207,7 +207,7 @@ public class MainActivity extends Activity {
 
     private void youWon() {
 
-        Log.i("selectedboth","you won");
+        Log.i("selectedboth","you won ");
         currentScorePoints++;
         unlockCounter++;
         currentScoreDisplay.setText("current\nscore:\n"+currentScorePoints+"");

@@ -40,6 +40,7 @@ import java.util.Random;
 public class MainActivity extends Activity {
 
     private static final SecureRandom random = new SecureRandom();
+    private static final int UNLOCK_LIMIT = 3;
     String searchQuery;
     Document doc;
     Document doc2;
@@ -51,13 +52,17 @@ public class MainActivity extends Activity {
     MediaPlayer correctPlayer;
     MediaPlayer wrongPlayer;
     MediaPlayer highscoreSound;
+    MediaPlayer unlocked;
 
     Context context;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
     int currentScorePoints;
+    int unlockCounter;
     int highScorePoints;
+    int unlockablesSize;
+    int totalUnlockables;
 
     TextView currentScoreDisplay;
     TextView highscoreDisplay;
@@ -77,41 +82,39 @@ public class MainActivity extends Activity {
     List<MainWord> mainWordsList;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         context = getApplicationContext();
         sharedPreferences = getPreferences(MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        generalSetup();
-        currentScorePoints=getScoreFromIntent(savedInstanceState);
+        setUpViews();
+        currentScorePoints=getScoreFromIntent(savedInstanceState,"theScore");
+        unlockCounter=getScoreFromIntent(savedInstanceState,"theCounter");
         currentScoreDisplay.setText("current\nscore:\n"+currentScorePoints+"");
         highScorePoints=sharedPreferences.getInt("highScore",0);
         highscoreDisplay.setText("HIGH\nSCORE:\n"+highScorePoints+"");
+        unlockablesSize=sharedPreferences.getInt("unlockables",10);
+        Log.i("unlockables",unlockCounter+" "+UNLOCK_LIMIT);
+        setupArraylists();
         runApp();
 
     }
 
-    public void generalSetup(){
-        setUpViews();
-        setupArraylists();
 
-
-    }
-
-    private int getScoreFromIntent(Bundle savedInstanceState) {
+    private int getScoreFromIntent(Bundle savedInstanceState,String key) {
         String newString;
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if(extras == null) {
                 newString= null;
             } else {
-                newString= extras.getString("theScore");
+                newString= extras.getString(key);
             }
         } else {
-            newString= (String) savedInstanceState.getSerializable("theScore");
+            newString= (String) savedInstanceState.getSerializable(key);
         }
         if(newString==null){
             newString="0";
@@ -122,7 +125,12 @@ public class MainActivity extends Activity {
 
     private void setupArraylists() {
         adjectivesList = new ArrayList<Adjectives>(EnumSet.allOf(Adjectives.class));
-        mainWordsList = new ArrayList<MainWord>(EnumSet.allOf(MainWord.class));
+        totalUnlockables = new ArrayList<MainWord>(EnumSet.allOf(MainWord.class)).size();
+        if(unlockablesSize>totalUnlockables){
+            unlockablesSize=totalUnlockables;
+        }
+        Log.i("unlockables",unlockablesSize+"/"+totalUnlockables);
+        mainWordsList = new ArrayList<MainWord>(EnumSet.allOf(MainWord.class)).subList(0,unlockablesSize-1);
         Collections.shuffle(adjectivesList);
         Collections.shuffle(mainWordsList);
         chooseWords();
@@ -201,7 +209,34 @@ public class MainActivity extends Activity {
 
         Log.i("selectedboth","you won");
         currentScorePoints++;
+        unlockCounter++;
         currentScoreDisplay.setText("current\nscore:\n"+currentScorePoints+"");
+        //unlock display
+        if(unlockCounter==UNLOCK_LIMIT && unlockablesSize<totalUnlockables){
+            unlockCounter=0;
+            unlockablesSize++;
+            editor.putInt("unlockables",unlockablesSize);
+            editor.commit();
+            unlocked.start();
+            imageToFind.setImageResource(R.drawable.unlock);
+            //unlock display
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    moveForwardWin();
+
+                }
+            }, 4000);
+
+        }else{
+            moveForwardWin();
+        }
+
+
+
+    }
+
+    private void moveForwardWin(){
         if(checkForHighScore()){
             highscoreSound.start();
             imageToFind.setImageResource(R.drawable.highscore);
@@ -211,8 +246,6 @@ public class MainActivity extends Activity {
             imageToFind.setImageResource(R.drawable.correct);
             goToNext(2000);
         }
-
-
     }
 
     private boolean checkForHighScore() {
@@ -224,13 +257,12 @@ public class MainActivity extends Activity {
             isHighScore=true;
         }
         return isHighScore;
-        //display success message
-        //continue playing
     }
 
     private void goToNext(int waitInMillis) {
         final Intent myIntent = new Intent(this, MainActivity.class);
         myIntent.putExtra("theScore", currentScorePoints+"");
+        myIntent.putExtra("theCounter", unlockCounter+"");
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -245,6 +277,7 @@ public class MainActivity extends Activity {
     private void youLost() {
         Log.i("selectedboth","you lost");
         currentScorePoints=0;
+        unlockCounter=0;
         wrongPlayer.start();
         imageToFind.setImageResource(R.drawable.wrong);
         goToNext(2000);
@@ -254,6 +287,7 @@ public class MainActivity extends Activity {
         correctPlayer = MediaPlayer.create(this, R.raw.correct);
         wrongPlayer = MediaPlayer.create(this, R.raw.wrong);
         highscoreSound = MediaPlayer.create(this, R.raw.highscore);
+        unlocked = MediaPlayer.create(this, R.raw.unlock);
         imageToFind=findViewById(R.id.imageToFind);
         currentScoreDisplay=findViewById(R.id.currentScore);
         highscoreDisplay=findViewById(R.id.highScore);
@@ -331,24 +365,14 @@ public class MainActivity extends Activity {
 
 
     private void runApp(){
-        //dictionaries
-        //combine words randomly
         wordWork();
-        //search image and display
-        //8 words to choose answers from
-        //record streaks
-        //maybe leaderboards
-        netWork();
-    }
-
-    private void netWork() {
         workDisplay();
-        workData();
-    }
-
-    private void workData() {
 
     }
+
+
+
+
 
 
     private void workDisplay() {

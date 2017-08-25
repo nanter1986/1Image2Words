@@ -43,7 +43,7 @@ import java.util.Random;
 public class MainActivity extends Activity {
 
     private static final SecureRandom random = new SecureRandom();
-    private static final int UNLOCK_LIMIT = 3;
+    private static final int UNLOCK_LIMIT = 6;
     private InterstitialAd interstitial;
     String searchQuery;
     Document doc;

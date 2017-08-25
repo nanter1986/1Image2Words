@@ -18,6 +18,7 @@ public class LaunchInstcructions extends Activity {
         setContentView(R.layout.activity_launch_instcructions);
         instructions = findViewById(R.id.instructions);
         playButton=findViewById(R.id.playButton);
+        instructions.setImageResource(R.drawable.instructions);
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="10"
+    tools:context="com.oneimagetwowords.nanter1986.a1image2words.LaunchInstcructions">
+
+    <ImageView
+        android:id="@+id/instructions"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8"
+        app:srcCompat="@color/cast_intro_overlay_background_color" />
+
+    <TextView
+        android:id="@+id/playButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:clickable="true"
+        android:gravity="center"
+        android:text="PLAY!"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="20dp" />
+</LinearLayout>

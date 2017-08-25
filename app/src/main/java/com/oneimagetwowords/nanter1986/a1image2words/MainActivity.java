@@ -18,6 +18,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
@@ -41,6 +44,7 @@ public class MainActivity extends Activity {
 
     private static final SecureRandom random = new SecureRandom();
     private static final int UNLOCK_LIMIT = 3;
+    private InterstitialAd interstitial;
     String searchQuery;
     Document doc;
     Document doc2;
@@ -66,6 +70,7 @@ public class MainActivity extends Activity {
 
     TextView currentScoreDisplay;
     TextView highscoreDisplay;
+    TextView toUnlockDisplay;
 
     ArrayList<CustomClickButtons>arraylistOfAdjectiveCustomButtons=new ArrayList<>();
 
@@ -87,6 +92,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        prepareIntAd();
         context = getApplicationContext();
         sharedPreferences = getPreferences(MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -97,10 +103,43 @@ public class MainActivity extends Activity {
         highScorePoints=sharedPreferences.getInt("highScore",0);
         highscoreDisplay.setText("HIGH\nSCORE:\n"+highScorePoints+"");
         unlockablesSize=sharedPreferences.getInt("unlockables",10);
+        toUnlockDisplay.setText("New Word:\n"+unlockCounter+"/"+UNLOCK_LIMIT);
         Log.i("unlockables",unlockCounter+" "+UNLOCK_LIMIT);
         setupArraylists();
         runApp();
 
+    }
+
+    private void prepareIntAd() {
+        //ca-app-pub-1155245883636527~3885643773
+        interstitial = new InterstitialAd(MainActivity.this);
+        interstitial.setAdUnitId("ca-app-pub-1155245883636527/3106736961");
+        interstitial.loadAd(new AdRequest.Builder().build());
+        Log.i("unlockables","into ad");
+        interstitial.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                // Load the next interstitial.
+                //interstitial.loadAd(new AdRequest.Builder().build());
+            }
+
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                Log.i("unlockables","display ad ready");
+                displayInterstitial();
+            }
+
+
+        });
+    }
+
+    private void displayInterstitial() {
+        if (interstitial.isLoaded()) {
+            interstitial.show();
+        } else {
+            interstitial.loadAd(new AdRequest.Builder().build());
+        }
     }
 
 
@@ -211,6 +250,7 @@ public class MainActivity extends Activity {
         currentScorePoints++;
         unlockCounter++;
         currentScoreDisplay.setText("current\nscore:\n"+currentScorePoints+"");
+        toUnlockDisplay.setText("New Word:\n"+unlockCounter+"/"+UNLOCK_LIMIT);
         //unlock display
         if(unlockCounter==UNLOCK_LIMIT && unlockablesSize<totalUnlockables){
             unlockCounter=0;
@@ -219,7 +259,20 @@ public class MainActivity extends Activity {
             editor.commit();
             unlocked.start();
             imageToFind.setImageResource(R.drawable.unlock);
-            //unlock display
+            for(int i=0;i<3;i++){
+                arraylistOfMainwordCustomButtons.get(i).textview.setText("");
+                arraylistOfMainwordCustomButtons.get(i).textview.setBackgroundColor(Color.WHITE);
+                arraylistOfAdjectiveCustomButtons.get(i).textview.setText("");
+                arraylistOfAdjectiveCustomButtons.get(i).textview.setBackgroundColor(Color.WHITE);
+            }
+            arraylistOfAdjectiveCustomButtons.get(0).textview.setText("Unlocked new Word:");
+            arraylistOfAdjectiveCustomButtons.get(0).textview.setBackgroundColor(Color.YELLOW);
+            arraylistOfMainwordCustomButtons.get(0).textview.setText(new ArrayList<MainWord>(EnumSet.allOf(MainWord.class)).get(unlockablesSize-1).getMainWord());
+            arraylistOfMainwordCustomButtons.get(0).textview.setBackgroundColor(Color.YELLOW);
+            arraylistOfAdjectiveCustomButtons.get(1).textview.setText("Unlocked Words:");
+            arraylistOfAdjectiveCustomButtons.get(1).textview.setBackgroundColor(Color.LTGRAY);
+            arraylistOfMainwordCustomButtons.get(1).textview.setText(unlockablesSize+"/"+new ArrayList<MainWord>(EnumSet.allOf(MainWord.class)).size());
+            arraylistOfMainwordCustomButtons.get(1).textview.setBackgroundColor(Color.LTGRAY);
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -291,6 +344,7 @@ public class MainActivity extends Activity {
         imageToFind=findViewById(R.id.imageToFind);
         currentScoreDisplay=findViewById(R.id.currentScore);
         highscoreDisplay=findViewById(R.id.highScore);
+        toUnlockDisplay=findViewById(R.id.toUnlock);
         arraylistOfAdjectiveCustomButtons.add(new CustomClickButtons((TextView)findViewById(R.id.adj1)));
         arraylistOfAdjectiveCustomButtons.add(new CustomClickButtons((TextView)findViewById(R.id.adj2)));
         arraylistOfAdjectiveCustomButtons.add(new CustomClickButtons((TextView)findViewById(R.id.adj3)));

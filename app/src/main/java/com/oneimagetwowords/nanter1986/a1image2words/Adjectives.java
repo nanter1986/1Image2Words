@@ -27,7 +27,17 @@ public enum Adjectives {
     HUGE("huge"),
     ENORMOUS("enormous"),
     PRETTY("pretty"),
-    UGLY("ugly");
+    UGLY("ugly"),
+    CHUBBY("chubby"),
+    GREAT("great"),
+    LONG("long"),
+    SOCIAL("social"),
+    EARLY("early"),
+    STRONG("strong"),
+    FREE("free"),
+    EASY("easy"),
+    POOR("poor"),
+    SERIOUS("serious");
 
     private String Adjective;
 

@@ -53,7 +53,21 @@ public enum MainWord {
     TURTLE("turtle"),
     DRAGON("dragon"),
     SWORD("sword"),
-    COMPUTER("computer");
+    COMPUTER("computer"),
+    WATERFALL("waterfall"),
+    FISH("fish"),
+    BIRD("bird"),
+    MAMMAL("mammal"),
+    SHARK("shark"),
+    LIZARD("lizard"),
+    CITY("city"),
+    VILLAGE("village"),
+    TORNADO("tornado"),
+    MOUNTAIN("mountain"),
+    RIVER("river"),
+    SKY("sky"),
+    DAWN("dawn"),
+    CLOUD("cloud");
 
     private String mainword;
 
